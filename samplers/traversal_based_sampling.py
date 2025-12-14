@@ -13,8 +13,7 @@ class RandomWalkSampler:
         # Probability of jumping to a fresh random node
         self.restart_p = getattr(params, "rw_restart_p", 0.15)
 
-    def sample(self, data, num_nodes_to_sample):
-
+ def sample(self, data, num_nodes_to_sample):
         edge_index = data.edge_index
         src, dst = edge_index
         device = src.device
@@ -38,15 +37,21 @@ class RandomWalkSampler:
         mask = torch.zeros(num_nodes, dtype=torch.bool, device=device)
 
         # Start the random walk from a random node
-        cur = torch.randint(0, num_nodes, (1,), device=device).item()
+        start_point = torch.randint(0, num_nodes, (1,), device=device).item()
+        cur = start_point
 
+        counter = 0
+        
         while mask.sum().item() < num_nodes_to_sample:
             # Mark current node as sampled.
             mask[cur] = True
+            counter += 1
+            if counter > num_nodes and mask.sum().item() < num_nodes_to_sample:
+                cur = torch.randint(0, num_nodes, (1,), device=device).item()
 
             if torch.rand(1, device=device).item() < self.restart_p or deg[cur].item() == 0:
                 # Restart: pick a new random node.
-                cur = torch.randint(0, num_nodes, (1,), device=device).item()
+                cur = start_point
             else:
                 # Follow one random outgoing edge from the current node.
                 du = deg[cur].item()
@@ -253,3 +258,4 @@ class ForestFireSampler:
             sampled_nodes = sampled_nodes[perm_nodes[:num_nodes_to_sample]]
 
         return sampled_nodes
+
