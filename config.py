@@ -39,7 +39,7 @@ class Config:
     # Dataset configuration
     # ----------------------------------------------------------------------
     datasets: List[str] = field(default_factory=lambda: ["PubMed", "Cora", "ogbn_arxiv", "CiteSeer", "Physics", "CS", "Computers", "Photo"]) # "PubMed", "Cora" "ogbn_arxiv, "CiteSeer", "Physics", "Computers", "Photo", "CS"
-    sampling_ratios: List[float] = field(default_factory=lambda: [0.5, 0.3, 0.1, 0.05]) # 0.5, 0.3, 0.1, 0.05
+    sampling_ratios: List[float] = field(default_factory=lambda: [1, 0.5, 0.3, 0.1, 0.05]) # 0.5, 0.3, 0.1, 0.05
     # Data splits
     train_split: float = 0.8
     val_split: float = 0.1
@@ -101,3 +101,4 @@ class Config:
     print_every: int = 20
     epoch_patience: int = 100
     min_delta: float = 0.1
+
